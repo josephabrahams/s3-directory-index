@@ -5,7 +5,7 @@ This script exploits the error document functionality of S3 static websites to c
 
 ## Bucket Setup
 
-1. Copy `list.html` into the S3 bucket of which you want to serve a directory listing.
+1. Copy `list.html` into the S3 bucket where you want to serve a directory listing.
     - Edit `s3Params` to reflect the bucket name and appropriate S3 endpoint. ([reference](http://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region))
     - Edit `ignoreList` to exclude any files from the directory index.
 
