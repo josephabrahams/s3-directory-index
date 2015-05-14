@@ -89,10 +89,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script>
             /* jshint browser: true, devel: true */
 
+            // s3 allows all special characters except slashes
+            function encodeS3Url(url) {
+                return encodeURIComponent(url).replace(/%2F/g, '/');
+            }
+
             // get hostname, strip extra slashes, ensure trailing slash
             function getAbsolutePath() {
                 'use strict';
-                return document.location.pathname.replace(/\/\/*/g, '/').replace(/\/?$/, '/');
+                return decodeURIComponent(document.location.pathname.replace(/\/\/*/g, '/').replace(/\/?$/, '/'));
             }
 
             // strip cwd from absolute path
@@ -272,7 +277,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     var requestUri = '?delimiter=/';
                     // if not if in root, pass in current dir
                     if (absolutePath !== '/') {
-                        requestUri += '&prefix=' + absolutePath.slice(1);
+                        requestUri += '&prefix=' + encodeURIComponent(absolutePath.slice(1));
                     }
                     // if paginated, pass in object to start with
                     if (marker) {
@@ -328,7 +333,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         if (fileName !== '') {
 
                             fileData.name = fileName;
-                            fileData.href = fileHref;
+                            fileData.href = encodeS3Url(fileHref);
                             fileData.size = fileList[i].getElementsByTagName('Size')[0].firstChild.data;
                             fileData.dateModified = fileList[i].getElementsByTagName('LastModified')[0].firstChild.data;
                             fileData.isDirectory = false;
@@ -351,7 +356,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         var dirHref = '/' + dirList[i].getElementsByTagName('Prefix')[0].firstChild.data;
 
                         dirData.name = dirHref.slice(absolutePath.length, dirHref.length);
-                        dirData.href = dirHref;
+                        dirData.href = encodeS3Url(dirHref);
                         dirData.size = null;
                         dirData.dateModified = null;
                         dirData.isDirectory = true;
@@ -368,7 +373,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     var nextMarker = null;
 
                     if (isPaginated === 'true') {
-                        nextMarker = xml.getElementsByTagName('NextMarker')[0].firstChild.data;
+                        nextMarker = encodeURIComponent(xml.getElementsByTagName('NextMarker')[0].firstChild.data);
                     }
 
                     return nextMarker;
