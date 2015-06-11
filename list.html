@@ -382,7 +382,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 // sort array of S3 objects based on name key in objects
                 function sortObjectsArray(objectsArray) {
                     return objectsArray.sort(function(a,b) {
-                        return a.name > b.name;
+                        return objectsArray.sort(function(a, b) {
+                            if (a.name > b.name) {
+                                return 1;
+                            }
+                            if (a.name < b.name) {
+                                return -1;
+                            }
+                            return 0;  // a === b
+                        });
                     });
                 }
 
